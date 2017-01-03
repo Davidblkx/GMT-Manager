@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AllMusicApi.Extensions;
+using CsQuery;
+using System.Web;
 
 namespace AllMusicApi
 {
@@ -13,6 +15,13 @@ namespace AllMusicApi
         {
             Name = name;
             Url = url;
+            ID = Url.SubstringFromLastIndex('/', 1);
+        }
+
+        public RelatedArtist(IDomObject htmlData)
+        {
+            Name = HttpUtility.HtmlDecode(htmlData.InnerHTML);
+            Url = htmlData.Attributes.FirstOrDefault(x => x.Key == "href").Value;
             ID = Url.SubstringFromLastIndex('/', 1);
         }
 

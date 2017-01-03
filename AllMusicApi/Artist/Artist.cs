@@ -17,6 +17,8 @@ namespace AllMusicApi
             ID = id;
 
             InitBasicInfo();
+            InitDiscography();
+            InitArtistRelations();
         }
 
         public string ID { get; set; }

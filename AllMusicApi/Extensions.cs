@@ -25,5 +25,10 @@ namespace AllMusicApi.Extensions
 
             return x;
         }
+
+        public static string Join(this IEnumerable<char> charList)
+        {
+            return string.Concat(charList);
+        }
     }
 }

@@ -129,6 +129,66 @@ namespace PluginTests
             Assert.AreEqual("The Endless River", album.Title);
             Assert.AreEqual("http://www.allmusic.com/album/the-endless-river-mw0002758626", album.Url);
             Assert.AreEqual("the-endless-river-mw0002758626", album.ID);
+
+            Assert.AreEqual(42, artist.SimiliarTo.Count);
+            Assert.AreEqual(20, artist.InfluencedBy.Count);
+            Assert.AreEqual(142, artist.FollowedBy.Count);
+            Assert.AreEqual(4, artist.AssociatedWith.Count);
+
+
+        }
+
+        [TestMethod]
+        public async Task TestGetAlbum()
+        {
+            var agent = new AllMusicApiAgent();
+            var album = await agent.GetAlbum("mule-variations-mw0000048101");
+
+            Assert.IsNotNull(album);
+
+            Assert.AreEqual(1999, album.ReleaseDate);
+            Assert.AreEqual("Mule Variations", album.Title);
+
+            Assert.IsTrue(album.Artists.Count == 1);
+
+            var artist = album.Artists.FirstOrDefault();
+
+            Assert.IsNotNull(artist);
+            Assert.AreEqual("http://www.allmusic.com/artist/tom-waits-mn0000615119", artist.Url);
+            Assert.AreEqual("tom-waits-mn0000615119", artist.ID);
+            Assert.AreEqual("Tom Waits", artist.Name);
+
+            Assert.IsTrue(album.Genres.Count == 4);
+            Assert.IsTrue(album.Genres.Contains("Experimental Rock"));
+
+            Assert.IsTrue(album.Moods.Count == 2);
+            Assert.IsTrue(album.Moods.Contains("Somber"));
+
+            Assert.IsTrue(album.Themes.Count == 0);
+
+            Assert.IsTrue(album.Tracks.Count == 16);
+            var track = album.Tracks.FirstOrDefault(x => x.TrackIndex == 11);
+
+            Assert.IsNotNull(track);
+            Assert.AreEqual(1, track.DiscIndex);
+            Assert.AreEqual("Picture in a Frame", track.Title);
+            Assert.AreEqual(2, track.Composers.Count);
+
+            var composer = track.Composers[0];
+            Assert.IsNotNull(composer);
+            Assert.AreEqual("http://www.allmusic.com/artist/kathleen-brennan-mn0000306103", composer.Url);
+            Assert.AreEqual("kathleen-brennan-mn0000306103", composer.ID);
+            Assert.AreEqual("Kathleen Brennan", composer.Name);
+
+            Assert.AreEqual(1, track.Performers.Count);
+            var performer = track.Performers[0];
+            Assert.IsNotNull(performer);
+            Assert.AreEqual("http://www.allmusic.com/artist/tom-waits-mn0000615119", performer.Url);
+            Assert.AreEqual("tom-waits-mn0000615119", performer.ID);
+            Assert.AreEqual("Tom Waits", performer.Name);
+
+            var time = TimeSpan.FromMinutes(3) + TimeSpan.FromSeconds(39);
+            Assert.AreEqual(time, track.Time);
         }
     }
 }

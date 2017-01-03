@@ -16,11 +16,13 @@ Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "MusicBee", "C:\Program File
 		AttachLaunchAction = No
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicBeeAllMusicPlugin", "MusicBeeAllMusicPlugin\MusicBeeAllMusicPlugin.csproj", "{0C421647-C63E-4EDE-AC99-9B6F468E923C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicBeePlugin", "MusicBeeAllMusicPlugin\MusicBeePlugin.csproj", "{0C421647-C63E-4EDE-AC99-9B6F468E923C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllMusicApi", "AllMusicApi\AllMusicApi.csproj", "{E74E5545-E514-4168-A577-8BA632DDAC34}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginTests", "PluginTests\PluginTests.csproj", "{EC5BA94C-D880-42C6-8EDA-3598A88A34A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MusicBeePlugin.Core", "MusicBeePlugin.Core\MusicBeePlugin.Core.csproj", "{65EEC067-F969-40CD-83CE-5863F5F8DD16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +60,14 @@ Global
 		{EC5BA94C-D880-42C6-8EDA-3598A88A34A7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EC5BA94C-D880-42C6-8EDA-3598A88A34A7}.Release|x86.ActiveCfg = Release|Any CPU
 		{EC5BA94C-D880-42C6-8EDA-3598A88A34A7}.Release|x86.Build.0 = Release|Any CPU
+		{65EEC067-F969-40CD-83CE-5863F5F8DD16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65EEC067-F969-40CD-83CE-5863F5F8DD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65EEC067-F969-40CD-83CE-5863F5F8DD16}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65EEC067-F969-40CD-83CE-5863F5F8DD16}.Debug|x86.Build.0 = Debug|Any CPU
+		{65EEC067-F969-40CD-83CE-5863F5F8DD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65EEC067-F969-40CD-83CE-5863F5F8DD16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65EEC067-F969-40CD-83CE-5863F5F8DD16}.Release|x86.ActiveCfg = Release|Any CPU
+		{65EEC067-F969-40CD-83CE-5863F5F8DD16}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

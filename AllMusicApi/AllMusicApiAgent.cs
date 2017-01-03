@@ -20,32 +20,6 @@ namespace AllMusicApi
             MaxResults = 40;
         }
 
-        public async Task<Artist> GetArtist(string allmusic_id)
-        {
-            var artist = new Artist(allmusic_id);
-
-            var apiEndPoint = $"http://www.allmusic.com/artist/{allmusic_id}";
-
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Referer", apiEndPoint);
-            client.DefaultRequestHeaders.Add("DNT", "1");
-            client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
-
-            var response = await client.GetAsync(apiEndPoint);
-            if (!response.IsSuccessStatusCode) return artist;
-
-            artist.BuildBasicInfo(await response.Content.ReadAsStringAsync());
-
-            response = await client.GetAsync(apiEndPoint + "/discography");
-            if (!response.IsSuccessStatusCode) return artist;
-
-            artist.BuildArtistAlbums(await response.Content.ReadAsStringAsync());
-
-
-
-            return artist;
-        }
-
         public async Task<List<T>> Search<T>(string query, int maxResults)
             where T : ISearchResult, new()
         {
@@ -66,7 +40,7 @@ namespace AllMusicApi
             while (results.Count < maxResults)
             {
                 currentPage++;
-
+                
                 var response = await client.GetAsync(apiEndPoint + currentPage);
                 if (!response.IsSuccessStatusCode) break;
 
@@ -74,6 +48,62 @@ namespace AllMusicApi
             }
 
             return results.Take(maxResults).ToList();
+        }
+
+        public async Task<Artist> GetArtist(string allmusic_id)
+        {
+            var artist = new Artist(allmusic_id);
+
+            var apiEndPoint = $"http://www.allmusic.com/artist/{allmusic_id}";
+
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Referer", apiEndPoint);
+            client.DefaultRequestHeaders.Add("DNT", "1");
+            client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
+
+            //Get basic info
+            var response = await client.GetAsync(apiEndPoint);
+            if (!response.IsSuccessStatusCode) return artist;
+
+            artist.BuildBasicInfo(await response.Content.ReadAsStringAsync());
+
+            //Get discography
+            response = await client.GetAsync(apiEndPoint + "/discography");
+            if (!response.IsSuccessStatusCode) return artist;
+
+            artist.BuildArtistAlbums(await response.Content.ReadAsStringAsync());
+
+            //Get Relations
+            response = await client.GetAsync(apiEndPoint + "/related");
+            if (!response.IsSuccessStatusCode) return artist;
+
+            artist.BuildArtistRelations(await response.Content.ReadAsStringAsync());
+
+            return artist;
+        }
+
+        public async Task<Album> GetAlbum(string allmusic_id)
+        {
+            var album = new Album(allmusic_id);
+
+            var apiEndPoint = $"http://www.allmusic.com/album/{allmusic_id}";
+
+            HttpClient client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Referer", apiEndPoint);
+            client.DefaultRequestHeaders.Add("DNT", "1");
+            client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
+
+            var response = await client.GetAsync(apiEndPoint);
+            if (!response.IsSuccessStatusCode) return album;
+
+            album.BuildBasicInfo(await response.Content.ReadAsStringAsync());
+
+            response = await client.GetAsync(apiEndPoint + "/similar");
+            if (!response.IsSuccessStatusCode) return album;
+
+            album.BuildAlbumRelations(await response.Content.ReadAsStringAsync());
+
+            return album;
         }
 
         protected IEnumerable<T> GetResult<T>(string htmlDoc)

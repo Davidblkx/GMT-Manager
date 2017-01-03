@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="MusicBeePlugin.Core.Settings.ControlSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MusicBeePlugin.Core.Settings"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Vertical" Grid.Column="0" Margin="5">
+            <CheckBox x:Name="checkSearchByAlbum" Content="Search by album"/>
+            <CheckBox x:Name="checkSearchByArtist" Content="Search by artist"/>
+            <TextBlock Text="Search priority:" Margin="0,5,0,0" />
+            <ComboBox x:Name="comboBoxSearchPriority">
+                <ComboBoxItem Content="Album" />
+                <ComboBoxItem Content="Artist" />
+                <ComboBoxItem Content="Album &amp; Artist" />
+            </ComboBox>
+
+            <CheckBox x:Name="checkSaveData" Content="Save tags to file"
+                      ToolTip="Useful to test scrap bot" Margin="0,5,0,0" />
+            <CheckBox x:Name="checkOnlyEmpty" Content="Only empty tags"
+                      ToolTip="Only save data to empty tags" />
+            <CheckBox x:Name="checkReplace" Content="Replace tags"
+                      ToolTip="Instead of add, replace tag data" />
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="5">
+            <TextBlock Text="Genres field:" />
+            <ComboBox x:Name="comboBoxGenres" />
+
+            <TextBlock Text="Moods field:" />
+            <ComboBox x:Name="comboBoxMoods" />
+            
+            <TextBlock Text="Themes field:" />
+            <ComboBox x:Name="comboBoxThemes" />
+        </StackPanel>
+    </Grid>
+</UserControl>
