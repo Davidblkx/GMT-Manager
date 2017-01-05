@@ -14,11 +14,5 @@ namespace MusicBeePlugin
             Enum.TryParse<MetaDataType>(name, out metaData);
             return metaData;
         }
-
-        private PluginSettings GetSettings()
-        {
-            string dataPath = _mbApiInterface.Setting_GetPersistentStoragePath();
-            return PluginSettings.LoadSettings(dataPath);
-        }
     }
 }

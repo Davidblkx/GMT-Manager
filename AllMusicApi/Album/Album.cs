@@ -9,7 +9,7 @@ using System.Web;
 
 namespace AllMusicApi
 {
-    public partial class Album
+    public partial class Album : IGmtMedia
     {
         public Album()
         {

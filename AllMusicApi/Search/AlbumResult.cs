@@ -46,5 +46,10 @@ namespace AllMusicApi.Model
 
             return ID != null && Url != null;
         }
+
+        public override string ToString()
+        {
+            return $"{Title} by {Artist} in {Year}[{Genre}]";
+        }
     }
 }

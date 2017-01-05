@@ -31,13 +31,14 @@ namespace AllMusicApi
             var apiEndPoint = $"http://www.allmusic.com/search/{type}/{urlName}/all/";
             var results = new List<T>();
             var currentPage = 0;
+            var lastCount = 0;
 
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("Referer", apiEndPoint);
             client.DefaultRequestHeaders.Add("DNT", "1");
             client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
 
-            while (results.Count < maxResults)
+            while (results.Count < maxResults || maxResults == -1)
             {
                 currentPage++;
                 
@@ -45,7 +46,13 @@ namespace AllMusicApi
                 if (!response.IsSuccessStatusCode) break;
 
                 results.AddRange(GetResult<T>(await response.Content.ReadAsStringAsync()));
+
+                if (results.Count == lastCount) break;
+
+                lastCount = results.Count;
             }
+
+            if (maxResults == -1) return results;
 
             return results.Take(maxResults).ToList();
         }

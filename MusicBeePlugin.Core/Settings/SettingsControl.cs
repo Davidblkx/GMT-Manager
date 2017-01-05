@@ -27,15 +27,17 @@ namespace MusicBeePlugin.Core
         {
             controlSettings.UpdateControls();
         }
-        public void LoadSettings(PluginSettings settings)
+        public void LoadSettings()
         {
-            controlSettings.LoadSettings(settings);
-
-            UpdateControls();
+            controlSettings.LoadSettings();
         }
-        public PluginSettings GetSettings()
+        public IPluginSettings GetSettings()
         {
             return controlSettings.GetSettings();
+        }
+        public void SaveSettings()
+        {
+            controlSettings.SaveSettings();
         }
     }
 }

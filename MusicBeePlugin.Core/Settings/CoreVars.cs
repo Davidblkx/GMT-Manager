@@ -8,8 +8,10 @@ namespace MusicBeePlugin.Core
 {
     public static class CoreVars
     {
+
         public static string PluginFolder { get{ return "GMTManager";} }
         public static string SettingsFile { get { return "Settings.json"; } }
+        public static string DataBaseFile { get { return "Cache.db"; } }
 
         public static string GetPluginFolderPath(string rootFolder)
         {
@@ -19,6 +21,10 @@ namespace MusicBeePlugin.Core
                 Directory.CreateDirectory(path);
 
             return path;
+        }
+        public static string GetFilePath(string rootFolder, string fileName)
+        {
+            return Path.Combine(GetPluginFolderPath(rootFolder), fileName);
         }
     }
 }

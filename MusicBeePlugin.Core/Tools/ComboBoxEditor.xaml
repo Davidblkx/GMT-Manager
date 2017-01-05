@@ -9,13 +9,13 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="25" />
+            <ColumnDefinition Width="20" />
         </Grid.ColumnDefinitions>
         
         <ComboBox Panel.ZIndex="5" Margin="0" x:Name="comboBox" Grid.ColumnSpan="2"/>
 
-        <Button x:Name="btn_addItem" Panel.ZIndex="10" Grid.Column="1" Content="+" />
+        <Button x:Name="btn_addItem" Panel.ZIndex="10" Grid.Column="1" Content="+" Visibility="Hidden" />
 
-        <TextBox x:Name="txt_Item" Panel.ZIndex="10" Grid.Column="0" />
+        <TextBox x:Name="txt_Item" Panel.ZIndex="15" FontSize="16" Grid.Column="0" Text="" />
     </Grid>
 </UserControl>

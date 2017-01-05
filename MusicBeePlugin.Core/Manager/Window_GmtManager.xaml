@@ -4,20 +4,42 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicBeePlugin.Core.Manager"
-        mc:Ignorable="d" WindowStyle="ToolWindow" ShowInTaskbar="False" Topmost="True"
-        Title="GMT Manager" Height="300" Width="500">
+        mc:Ignorable="d" WindowStyle="ToolWindow" ShowInTaskbar="True" Topmost="False"
+        Title="GMT Manager" Height="500" Width="800">
     <Grid>
         <TabControl x:Name="tabControl">
-            <TabItem Header="Basic Info">
+            <TabItem Header="Genres Moods Themes">
                 <TabItem.Content>
-                    <local:Control_BasicInfo x:Name="filesBasicInfo" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <local:Control_CollectionManager Padding="5" Title="Genres" 
+                                                         Grid.Column="0" x:Name="_manager_genres" />
+                        <local:Control_CollectionManager Padding="5" Title="Moods" 
+                                                         Grid.Column="1" x:Name="_manager_moods" />
+                        <local:Control_CollectionManager Padding="5" Title="Themes" 
+                                                         Grid.Column="2" x:Name="_manager_themes" />
+
+                    </Grid>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Genres">
+            <TabItem Header="Web Import">
                 <TabItem.Content>
-                    <local:Control_CollectionManager x:Name="managerGenres" />
+                    <local:Control_WebImport x:Name="_webImport" />
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Header="File List">
+                <TabItem.Content>
+                    <local:Control_BasicInfo x:Name="_filesBasicInfo" />
                 </TabItem.Content>
             </TabItem>
         </TabControl>
+
+        <Button x:Name="_btn_save_metadata" Content="Save" Margin="0,2,10,0"
+                HorizontalAlignment="Right" VerticalAlignment="Top" Width="100"/>
     </Grid>
 </Window>

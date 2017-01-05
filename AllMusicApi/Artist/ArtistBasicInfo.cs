@@ -9,7 +9,7 @@ using AllMusicApi.Extensions;
 
 namespace AllMusicApi
 {
-    public partial class Artist
+    public partial class Artist : IGmtMedia
     {
         protected virtual void InitBasicInfo()
         {

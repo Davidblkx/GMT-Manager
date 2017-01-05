@@ -100,6 +100,7 @@
     <Compile Include="Artist\ArtistRelations.cs" />
     <Compile Include="Artist\RelatedArtist.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="IGmtMedia.cs" />
     <Compile Include="Search\AlbumResult.cs" />
     <Compile Include="Search\ArtistResults.cs" />
     <Compile Include="Search\ISearchResult.cs" />

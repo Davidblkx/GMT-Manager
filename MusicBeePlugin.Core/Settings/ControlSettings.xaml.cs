@@ -36,6 +36,8 @@ namespace MusicBeePlugin.Core.Settings
             comboBoxGenres.ItemsSource = tagFields;
             comboBoxMoods.ItemsSource = tagFields;
             comboBoxThemes.ItemsSource = tagFields;
+
+            LoadSettings();
         }
 
         public void UpdateControls()
@@ -48,8 +50,10 @@ namespace MusicBeePlugin.Core.Settings
             checkReplace.IsEnabled = save;
         }
 
-        public void LoadSettings(PluginSettings settings)
+        public void LoadSettings()
         {
+            var settings = PluginSettings.LocalSettings;
+
             checkOnlyEmpty.IsChecked = settings.OnlyUpdateEmptyTags;
             checkReplace.IsChecked = settings.ReplaceTags;
             checkSaveData.IsChecked = settings.SaveDataToFiles;
@@ -60,23 +64,31 @@ namespace MusicBeePlugin.Core.Settings
             comboBoxGenres.SelectedItem = settings.GenresTagField;
             comboBoxMoods.SelectedItem = settings.MoodsTagField;
             comboBoxThemes.SelectedItem = settings.ThemesTagField;
+
+            UpdateControls();
         }
 
-        public PluginSettings GetSettings()
+        public void SaveSettings()
         {
-            return new PluginSettings
-            {
-                OnlyUpdateEmptyTags = checkOnlyEmpty.IsChecked ?? false,
-                ReplaceTags = checkReplace.IsChecked ?? false,
-                SaveDataToFiles = checkSaveData.IsChecked ?? false,
-                SearchDataByAlbum = checkSearchByAlbum.IsChecked ?? false,
-                SearchDataByArtist = checkSearchByArtist.IsChecked ?? false,
+            GetSettings().Save();
+        }
 
-                SearchPriority = comboBoxSearchPriority.SelectedIndex,
-                GenresTagField = comboBoxGenres.SelectedItem as string,
-                MoodsTagField = comboBoxMoods.SelectedItem as string,
-                ThemesTagField = comboBoxThemes.SelectedItem as string
-            };
+        public IPluginSettings GetSettings()
+        {
+            var settings = PluginSettings.LocalSettings;
+
+            settings.OnlyUpdateEmptyTags = checkOnlyEmpty.IsChecked ?? false;
+            settings.ReplaceTags = checkReplace.IsChecked ?? false;
+            settings.SaveDataToFiles = checkSaveData.IsChecked ?? false;
+            settings.SearchDataByAlbum = checkSearchByAlbum.IsChecked ?? false;
+            settings.SearchDataByArtist = checkSearchByArtist.IsChecked ?? false;
+
+            settings.SearchPriority = comboBoxSearchPriority.SelectedIndex;
+            settings.GenresTagField = comboBoxGenres.SelectedItem as string;
+            settings.MoodsTagField = comboBoxMoods.SelectedItem as string;
+            settings.ThemesTagField = comboBoxThemes.SelectedItem as string;
+
+            return settings;
         }
     }
 }

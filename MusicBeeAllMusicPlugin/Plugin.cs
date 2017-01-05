@@ -13,42 +13,42 @@ namespace MusicBeePlugin
     //Main plugin implementation
     public partial class Plugin
     {
+        // TODO: Allow multiple windows or make it a panel?
         private Window_GmtManager _gmtManager;
         private MusicBeeApiInterface _mbApiInterface;
-        private SettingsControl _settingsControl;
+        private SettingsControl _control;
 
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
             _mbApiInterface = new MusicBeeApiInterface();
             _mbApiInterface.Initialise(apiInterfacePtr);
 
-            _settingsControl = null;
+            //Get persistent folder
+            string rootFolder = _mbApiInterface.Setting_GetPersistentStoragePath();
+            PluginSettings.InitSettings(rootFolder);
 
             return BuildPluginInfo();
         }
 
         public bool Configure(IntPtr panelHandle)
         {
-            // save any persistent settings in a sub-folder of this path
-            string dataPath = _mbApiInterface.Setting_GetPersistentStoragePath();
-
-            _settingsControl = new SettingsControl();
-            _settingsControl.LoadSettings(PluginSettings.LoadSettings(dataPath));
-            _settingsControl.SetTagFields(Enum.GetNames(typeof(MetaDataType)).ToList());
+            if(_control == null)
+            {
+                _control = new SettingsControl();
+                _control.SetTagFields(Enum.GetNames(typeof(MetaDataType)).ToList());
+            }
 
             if (panelHandle != IntPtr.Zero)
             {
                 Panel configPanel = (Panel)Panel.FromHandle(panelHandle);
-                configPanel.Controls.Add(_settingsControl);
+                configPanel.Controls.Add(_control);
             }
 
             return true;
         }
         public void SaveSettings()
         {
-            // save any persistent settings in a sub-folder of this path
-            string dataPath = _mbApiInterface.Setting_GetPersistentStoragePath();
-            _settingsControl?.GetSettings().Save(dataPath);
+            _control.SaveSettings();
         }
 
         public void Close(PluginCloseReason reason)

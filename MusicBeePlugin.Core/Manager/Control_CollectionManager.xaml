@@ -4,9 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MusicBeePlugin.Core.Manager"
-             mc:Ignorable="d" 
+             xmlns:core="clr-namespace:MusicBeePlugin.Core.Tools"
+             mc:Ignorable="d" x:Name="_this"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <ListView x:Name="_listView" ></ListView>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="25" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="{Binding ElementName=_this, Path=Title}" Grid.Row="0"
+                   FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"
+                   />
+
+        <ListView x:Name="_listView" Grid.Row="1" ></ListView>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="btn_remove" Content="-" Grid.Column="0" IsEnabled="False" />
+            <core:ComboBoxEditor x:Name="cmb_add" Grid.Column="1" />
+        </Grid>
     </Grid>
 </UserControl>
