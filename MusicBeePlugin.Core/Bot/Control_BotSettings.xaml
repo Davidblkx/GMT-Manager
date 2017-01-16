@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="MusicBeePlugin.Core.Bot.Control_BotSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MusicBeePlugin.Core.Bot"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="GroupBoxHeader">
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Column="0" Margin="5">
+            <GroupBox>
+                <GroupBox.Header>
+                    <TextBlock Text="Save Tags Mode" Style="{StaticResource GroupBoxHeader}" />
+                </GroupBox.Header>
+
+                <StackPanel>
+                    <RadioButton x:Name="Setting_RadioButton_SaveMode_Test" Content="Test Mode" Margin="0,5,0,0" IsChecked="True"/>
+                    <RadioButton x:Name="Setting_RadioButton_SaveMode_Empty" Content="Empty Mode" />
+                    <RadioButton x:Name="Setting_RadioButton_SaveMode_Add" Content="Add Mode" />
+                    <RadioButton x:Name="Setting_RadioButton_SaveMode_Replace" Content="Replace Mode" />
+                </StackPanel>
+            </GroupBox>
+            <GroupBox>
+                <GroupBox.Header>
+                    <TextBlock Text="Other" Style="{StaticResource GroupBoxHeader}" />
+                </GroupBox.Header>
+
+                <StackPanel>
+                    <Label>Algorithm Tolerance:</Label>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="50" />
+                        </Grid.ColumnDefinitions>
+
+                        <Slider x:Name="Setting_Slider_AlgorithmTolerance" IsSnapToTickEnabled="True"
+                                Interval="1" TickFrequency="1" Grid.Column="0"
+                                Maximum="30" Minimum="0" Value="0"/>
+                        <TextBox Grid.Column="1" Margin="0" HorizontalContentAlignment="Center"
+                                 Text="{Binding ElementName=Setting_Slider_AlgorithmTolerance, Path=Value, Mode=TwoWay}" />
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Margin="5">
+            <GroupBox>
+                <GroupBox.Header>
+                    <TextBlock Text="Get Tags Type" Style="{StaticResource GroupBoxHeader}" />
+                </GroupBox.Header>
+
+                <StackPanel>
+                    <CheckBox x:Name="Setting_CheckBox_TagType_Album" Content="Album tags" IsChecked="True"/>
+                    <CheckBox x:Name="Setting_CheckBox_TagType_Artist" Content="Artist tags" IsChecked="True"/>
+                    <ComboBox x:Name="Setting_ComboBox_TagType_Priority" SelectedIndex="0">
+                        <ComboBoxItem Content="Priority to Album tags" />
+                        <ComboBoxItem Content="Priority to Artist tags" />
+                        <ComboBoxItem Content="Get both, Artist and Album tags" />
+                    </ComboBox>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox>
+                <GroupBox.Header>
+                    <CheckBox x:Name="Setting_CheckBox_Cache_Persistent"
+                              Content="Use Persistent Cache" IsChecked="True"/>
+                </GroupBox.Header>
+
+                <StackPanel IsEnabled="{Binding ElementName=Setting_CheckBox_Cache_Persistent, Path=IsChecked}">
+                    
+                    <CheckBox x:Name="Setting_CheckBox_Cache_LimitSize"
+                              Content="Limit Cache Size" IsChecked="True"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="50" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="Setting_TextBox_Cache_LimitSizeValue" Grid.Column="0"
+                                 HorizontalContentAlignment="Center"
+                                 IsEnabled="{Binding ElementName=Setting_CheckBox_Cache_LimitSize, Path=IsChecked}"/>
+                        <TextBlock Text="MB" Grid.Column="1" HorizontalAlignment="Center" />
+                    </Grid>
+
+                    <CheckBox x:Name="Setting_CheckBox_Cache_LimitTime"
+                              Content="Limit Cache Time" IsChecked="True"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="50" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="Setting_TextBox_Cache_LimitTimeValue" Grid.Column="0"
+                                 HorizontalContentAlignment="Center"
+                                 IsEnabled="{Binding ElementName=Setting_CheckBox_Cache_LimitTime, Path=IsChecked}"/>
+                        <TextBlock Text="Days" Grid.Column="1" HorizontalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+                
+            </GroupBox>
+        </StackPanel>
+
+        <TextBlock Grid.ColumnSpan="2" Grid.Row="2" x:Name="TextBox_Info" Margin="5,0,5,5" />
+    </Grid>
+</UserControl>

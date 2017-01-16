@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using MusicBeePlugin.Core;
 using System.Reflection;
 using MusicBeePlugin.Core.Manager;
+using MusicBeePlugin.Core.Tools;
 
 namespace MusicBeePlugin
 {
@@ -14,7 +15,7 @@ namespace MusicBeePlugin
     public partial class Plugin
     {
         // TODO: Allow multiple windows or make it a panel?
-        private Window_GmtManager _gmtManager;
+        private WindowManager _windows;
         private MusicBeeApiInterface _mbApiInterface;
         private SettingsControl _control;
 
@@ -53,7 +54,8 @@ namespace MusicBeePlugin
 
         public void Close(PluginCloseReason reason)
         {
-            _gmtManager?.ForceClose();
+            PluginSettings.LocalSettings.Save();
+            _windows?.CloseAll();
         }
 
         /// <summary>

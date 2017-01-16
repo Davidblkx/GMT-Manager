@@ -15,20 +15,20 @@ namespace PluginTests
         public async Task TestSearchArtist()
         {
             var api = new AllMusicApiAgent();
-            var result = await api.Search<ArtistResults>("dido", 30);
+            var result = await api.Search<ArtistResult>("dido", 30);
 
             Assert.AreEqual(30, result.Count);
 
             var r0 = result[0];
             var r20 = result[19];
 
-            Assert.AreEqual("Dido", r0.Name);
+            Assert.AreEqual("Dido", r0.Artist);
             Assert.AreEqual("http://www.allmusic.com/artist/dido-mn0000217344", r0.Url);
             Assert.AreEqual("dido-mn0000217344", r0.ID);
             Assert.AreEqual("Pop/Rock", r0.Genre);
             Assert.AreEqual("1990s - 2010s", r0.Decades);
 
-            Assert.AreEqual("Irocc & Dido Brown", r20.Name);
+            Assert.AreEqual("Irocc & Dido Brown", r20.Artist);
             Assert.AreEqual("http://www.allmusic.com/artist/irocc-dido-brown-mn0002503861", r20.Url);
             Assert.AreEqual("irocc-dido-brown-mn0002503861", r20.ID);
             Assert.AreEqual("Reggae", r20.Genre);

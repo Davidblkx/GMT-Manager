@@ -23,10 +23,6 @@ namespace MusicBeePlugin.Core
             controlSettings.InitializeTagFields(fields);
         }
 
-        public void UpdateControls()
-        {
-            controlSettings.UpdateControls();
-        }
         public void LoadSettings()
         {
             controlSettings.LoadSettings();

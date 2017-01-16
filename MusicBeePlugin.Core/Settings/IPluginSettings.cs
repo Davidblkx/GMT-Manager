@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MusicBeePlugin.Core.Bot;
+using MusicBeePlugin.Core.Settings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,17 +9,16 @@ namespace MusicBeePlugin.Core
 {
     public interface IPluginSettings
     {
-        bool SaveDataToFiles { get; set; }
-        bool OnlyUpdateEmptyTags { get; set; }
-        bool ReplaceTags { get; set; }
+        GmtBotOptions BotOptions { get; set; }
+
+        Dictionary<string, WindowSettings> Windows { get; set; }
+
+        WindowSettings GetWindowSetting(string windowType);
+        void SetWindowSetting(string windowType, WindowSettings setting);
 
         string GenresTagField { get; set; }
         string ThemesTagField { get; set; }
         string MoodsTagField { get; set; }
-
-        bool SearchDataByAlbum { get; set; }
-        bool SearchDataByArtist { get; set; }
-        int SearchPriority { get; set; }
 
         List<string> Genres { get; set; }
         List<string> Moods { get; set; }

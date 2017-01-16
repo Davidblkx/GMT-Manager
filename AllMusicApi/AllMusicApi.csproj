@@ -93,6 +93,7 @@
     <Compile Include="Album\AlbumRelations.cs" />
     <Compile Include="Album\AlbumTrack.cs" />
     <Compile Include="Album\RelatedAlbum.cs" />
+    <Compile Include="Algorithms.cs" />
     <Compile Include="AllMusicApiAgent.cs" />
     <Compile Include="Artist\Artist.cs" />
     <Compile Include="Artist\ArtistBasicInfo.cs" />

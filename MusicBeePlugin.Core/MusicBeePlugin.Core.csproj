@@ -55,6 +55,10 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="protobuf-net, Version=2.1.0.0, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\packages\protobuf-net.2.1.0\lib\net40\protobuf-net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -87,6 +91,21 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bot\CacheBot.cs" />
+    <Compile Include="Bot\CacheBotExtensions.cs" />
+    <Compile Include="Bot\CacheObject.cs" />
+    <Compile Include="Bot\CacheType.cs" />
+    <Compile Include="Bot\Control_BotSettings.xaml.cs">
+      <DependentUpon>Control_BotSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Bot\GmtBot.cs" />
+    <Compile Include="Bot\GmtBotOptions.cs" />
+    <Compile Include="Bot\LogBot.cs" />
+    <Compile Include="Bot\LogBotEntry.cs" />
+    <Compile Include="Bot\LogBotEntryLevel.cs" />
+    <Compile Include="Bot\Window_LaunchBot.xaml.cs">
+      <DependentUpon>Window_LaunchBot.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Manager\Control_BasicInfo.xaml.cs">
       <DependentUpon>Control_BasicInfo.xaml</DependentUpon>
     </Compile>
@@ -124,9 +143,12 @@
     <Compile Include="Settings\SettingsControl.Designer.cs">
       <DependentUpon>SettingsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings\WindowSettings.cs" />
     <Compile Include="Tools\ComboBoxEditor.xaml.cs">
       <DependentUpon>ComboBoxEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tools\PluginWindow.cs" />
+    <Compile Include="Tools\WindowManager.cs" />
     <Compile Include="TrackFile.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -144,6 +166,14 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Bot\Control_BotSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Bot\Window_LaunchBot.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Manager\Control_BasicInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -175,6 +205,7 @@
       <Name>AllMusicApi</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -13,24 +13,6 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Vertical" Grid.Column="0" Margin="5">
-            <CheckBox x:Name="checkSearchByAlbum" Content="Search by album"/>
-            <CheckBox x:Name="checkSearchByArtist" Content="Search by artist"/>
-            <TextBlock Text="Search priority:" Margin="0,5,0,0" />
-            <ComboBox x:Name="comboBoxSearchPriority">
-                <ComboBoxItem Content="Album" />
-                <ComboBoxItem Content="Artist" />
-                <ComboBoxItem Content="Album &amp; Artist" />
-            </ComboBox>
-
-            <CheckBox x:Name="checkSaveData" Content="Save tags to file"
-                      ToolTip="Useful to test scrap bot" Margin="0,5,0,0" />
-            <CheckBox x:Name="checkOnlyEmpty" Content="Only empty tags"
-                      ToolTip="Only save data to empty tags" />
-            <CheckBox x:Name="checkReplace" Content="Replace tags"
-                      ToolTip="Instead of add, replace tag data" />
-        </StackPanel>
-
-        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="5">
             <TextBlock Text="Genres field:" />
             <ComboBox x:Name="comboBoxGenres" />
 

@@ -10,9 +10,12 @@ namespace AllMusicApi.Model
     public interface ISearchResult
     {
         SearchResultType ResultType { get;  }
+
         string ID { get; }
         string Url { get; }
 
         bool Build(IDomObject info);
+
+        int Diference(string query, string field = "Artist");
     }
 }

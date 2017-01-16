@@ -1,4 +1,5 @@
 ﻿using MusicBeePlugin.Core;
+using MusicBeePlugin.Core.Bot;
 using MusicBeePlugin.Core.Manager;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,6 @@ namespace MusicBeePlugin
     {
         private void OpenGMTManager(object sender, EventArgs e)
         {
-            //Check if window was created before
-            if (_gmtManager == null || !_gmtManager.IsLoaded)
-            {
-                _gmtManager = new Window_GmtManager();
-                _gmtManager.OnSave += _gmtManager_OnSave;
-            }
-
             //Load selected files
             string[] files = new string[0];
             _mbApiInterface.Library_QueryFilesEx("domain=SelectedFiles", ref files);
@@ -55,17 +49,25 @@ namespace MusicBeePlugin
             }
 
             //Initialize and show window
-            _gmtManager.SetTrackToHandle(source);
-            _gmtManager.TryToShow();
+            _windows.ShowNew<Window_GmtManager>(source);
+        }
+        private void OpenGMTBot(object sender, EventArgs e)
+        {
+            _windows.ShowNew<Window_LaunchBot>();
         }
 
-        private void _gmtManager_OnSave(object sender, IEnumerable<TrackFile> files)
+        /// <summary>
+        /// Update GMT tags from specified file list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="files"></param>
+        private void UpdateTags(object sender, IEnumerable<TrackFile> files)
         {
             if (files.Count() == 0) return;
 
-            foreach(var f in files)
+            foreach (var f in files)
             {
-                _mbApiInterface.Library_SetFileTag(f.FilePath, 
+                _mbApiInterface.Library_SetFileTag(f.FilePath,
                     GetMetaDataTypeByName(PluginSettings.LocalSettings.GenresTagField),
                    string.Join(";", f.Genres));
 

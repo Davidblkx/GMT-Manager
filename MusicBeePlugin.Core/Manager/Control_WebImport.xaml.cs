@@ -56,7 +56,7 @@ namespace MusicBeePlugin.Core.Manager
             IEnumerable<ISearchResult> results;
 
             if (searchType == SearchResultType.Artist)
-                results = await agent.Search<ArtistResults>(query, -1);
+                results = await agent.Search<ArtistResult>(query, -1);
             else
                 results = await agent.Search<AlbumResult>(query, -1);
 

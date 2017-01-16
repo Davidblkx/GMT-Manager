@@ -68,6 +68,11 @@ namespace AllMusicApi.Model
 
             return ID != null && Url != null;
         }
+
+        public int Diference(string query, string field = "Artist")
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

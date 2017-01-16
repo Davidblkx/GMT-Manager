@@ -9,7 +9,7 @@ using AllMusicApi.Extensions;
 
 namespace AllMusicApi.Model
 {
-    public class ArtistResults : ISearchResult
+    public class ArtistResult : ISearchResult
     {
         public string ID { get; private set; }
         public string Url { get; private set; }
@@ -17,7 +17,7 @@ namespace AllMusicApi.Model
         public SearchResultType ResultType
         { get { return SearchResultType.Artist; } }
 
-        public string Name { get; private set; }
+        public string Artist { get; private set; }
         public string Genre { get; set; }
         public string Decades { get; set; }
 
@@ -26,7 +26,7 @@ namespace AllMusicApi.Model
         {
             var S = CQ.Create(info);
 
-            Name = HttpUtility.HtmlDecode(S[".name a"]?.FirstOrDefault()?.InnerHTML?.Trim() ?? "Unknown");
+            Artist = HttpUtility.HtmlDecode(S[".name a"]?.FirstOrDefault()?.InnerHTML?.Trim() ?? "Unknown");
 
             Genre = HttpUtility.HtmlDecode(S[".genres"]?.FirstOrDefault()?.InnerHTML?.Trim() ?? "Unknown Genre");
             Decades = HttpUtility.HtmlDecode(S[".decades"]?.FirstOrDefault()?.InnerHTML?.Trim() ?? "Unknown Decade");
@@ -36,6 +36,21 @@ namespace AllMusicApi.Model
             ID = Url.SubstringFromLastIndex('/', 1);
 
             return ID != null && Url != null;
+        }
+
+        public int Diference(string query, string field = "Artist")
+        {
+            switch (field)
+            {
+                case "Artist":
+                    return Algorithms.LevenshteinDistance.Calculate(Artist.ToLower(), query.ToLower());
+                case "Genre":
+                    return Algorithms.LevenshteinDistance.Calculate(Genre.ToLower(), query.ToLower());
+                case "Decades":
+                    return Algorithms.LevenshteinDistance.Calculate(Decades.ToLower(), query.ToLower());
+                default:
+                    return int.MaxValue;
+            }
         }
     }
 }

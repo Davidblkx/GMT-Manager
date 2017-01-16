@@ -1,0 +1,25 @@
+﻿<src:PluginWindow x:Class="MusicBeePlugin.Core.Bot.Window_LaunchBot"
+        xmlns:src="clr-namespace:MusicBeePlugin.Core.Tools"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MusicBeePlugin.Core.Bot"
+        xmlns:manager="clr-namespace:MusicBeePlugin.Core.Manager"
+        mc:Ignorable="d"
+        Title="GMT Bot" Height="300" Width="500">
+    <Grid>
+        <TabControl x:Name="_tabs">
+            <TabItem Header="File List">
+                <TabItem.Content>
+                    <manager:Control_BasicInfo x:Name="_info" />
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Header="Settings">
+                <TabItem.Content>
+                    <local:Control_BotSettings Margin="0" />
+                </TabItem.Content>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</src:PluginWindow>

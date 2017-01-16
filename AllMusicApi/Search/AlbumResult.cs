@@ -51,5 +51,20 @@ namespace AllMusicApi.Model
         {
             return $"{Title} by {Artist} in {Year}[{Genre}]";
         }
+
+        public int Diference(string query, string field = "Artist")
+        {
+            switch (field)
+            {
+                case "Artist":
+                    return Algorithms.LevenshteinDistance.Calculate(Artist.ToLower(), query.ToLower());
+                case "Genre":
+                    return Algorithms.LevenshteinDistance.Calculate(Genre.ToLower(), query.ToLower());
+                case "Title":
+                    return Algorithms.LevenshteinDistance.Calculate(Title.ToLower(), query.ToLower());
+                default:
+                    return int.MaxValue;
+            }
+        }
     }
 }

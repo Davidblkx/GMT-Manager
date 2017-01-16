@@ -5,21 +5,20 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Forms.Integration;
 using AllMusicApi;
+using MusicBeePlugin.Core.Tools;
 
 namespace MusicBeePlugin.Core.Manager
 {
     /// <summary>
     /// Interaction logic for Window_GmtManager.xaml
     /// </summary>
-    public partial class Window_GmtManager : Window
+    public partial class Window_GmtManager : PluginWindow
     {
-        private bool _cancelClose = true;
         private List<TrackFile> _files;
 
         public Window_GmtManager()
         {
             InitializeComponent();
-            Closing += HandleWindowClose;
 
             _manager_genres.SetSelectionSource(PluginSettings.LocalSettings.Genres);
             _manager_moods.SetSelectionSource(PluginSettings.LocalSettings.Moods);
@@ -38,7 +37,7 @@ namespace MusicBeePlugin.Core.Manager
                 _files[i].Themes = _manager_themes.GetItems();
             }
 
-            OnSave?.Invoke(this, _files);
+            InvokeOnSave(this, _files);
 
             Close();
         }
@@ -73,30 +72,19 @@ namespace MusicBeePlugin.Core.Manager
             _webImport.SetSuggetions(suggetions);
         }
 
-        public void TryToShow()
+        public override void Reset()
         {
-            if (!IsVisible)
-            {
-                //Accept keyboard input
-                ElementHost.EnableModelessKeyboardInterop(this);
-                Show();
-            }
+            _filesBasicInfo?.SetTrackSource(new List<TrackFile>());
+            _webImport?.Reset();
         }
-
-        public void ForceClose()
+        public override void Initialize(params object[] init_params)
         {
-            _cancelClose = false;
-            Close();
-        }
+            if (init_params.Length == 0) return;
+            var files = init_params[0] as List<TrackFile>;
 
-        public event SaveChangesHandler OnSave;
-        public delegate void SaveChangesHandler(object sender, IEnumerable<TrackFile> files);
+            if (files == null) return;
 
-        private void HandleWindowClose(object sender, CancelEventArgs e)
-        {
-            e.Cancel = _cancelClose;
-            if (e.Cancel)
-                Hide();
+            SetTrackToHandle(files);
         }
     }
 }

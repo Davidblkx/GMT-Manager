@@ -1,4 +1,5 @@
-﻿<Window x:Class="MusicBeePlugin.Core.Manager.Window_GmtManager"
+﻿<src:PluginWindow x:Class="MusicBeePlugin.Core.Manager.Window_GmtManager"
+        xmlns:src="clr-namespace:MusicBeePlugin.Core.Tools"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,6 +7,7 @@
         xmlns:local="clr-namespace:MusicBeePlugin.Core.Manager"
         mc:Ignorable="d" WindowStyle="ToolWindow" ShowInTaskbar="True" Topmost="False"
         Title="GMT Manager" Height="500" Width="800">
+    
     <Grid>
         <TabControl x:Name="tabControl">
             <TabItem Header="Genres Moods Themes">
@@ -42,4 +44,4 @@
         <Button x:Name="_btn_save_metadata" Content="Save" Margin="0,2,10,0"
                 HorizontalAlignment="Right" VerticalAlignment="Top" Width="100"/>
     </Grid>
-</Window>
+</src:PluginWindow>
