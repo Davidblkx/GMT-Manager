@@ -26,7 +26,6 @@ namespace AllMusicApi
             var urlName = HttpUtility.UrlEncode(query);
 
             var type = new T().ResultType.ToString().ToLower() + 's';
-            if (type == "albums") type = "all";//Fix AllMusic bug where searching for an album always return 0
 
             var apiEndPoint = $"http://www.allmusic.com/search/{type}/{urlName}/all/";
             var results = new List<T>();
