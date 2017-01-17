@@ -14,10 +14,23 @@ namespace MusicBeePlugin.Core.Bot
     {
         private List<TrackFile> _files;
         private string _cacheFile;
+        private bool _cancelProgress;
 
         public CacheBot Cache { get; private set; }
         public LogBot Logger { get; private set; }
         public GmtBotOptions Options { get; private set; }
+
+        public void CancelProgress()
+        {
+            _cancelProgress = true;
+            Logger.Add(new LogBotEntry
+            {
+                Level = LogBotEntryLevel.Warning,
+                Message = "Cancellation request receive",
+                Time = DateTime.Now
+            });
+        }
+
         public IEnumerable<TrackFile> Files
         {
             get
@@ -54,6 +67,10 @@ namespace MusicBeePlugin.Core.Bot
             }
 
             Cache = CacheBot.LoadFile(_cacheFile) ?? new CacheBot();
+        }
+        private void SaveCache()
+        {
+            CacheBot.Serialize(Cache, _cacheFile);
         }
 
         private IGmtMedia GetCache(TrackFile file, CacheType type)
@@ -125,6 +142,8 @@ namespace MusicBeePlugin.Core.Bot
         /// <returns></returns>
         public async Task Run(Dispatcher uiDispatcher)
         {
+            _cancelProgress = false;
+
             Logger.AddAsync(new LogBotEntry(
                 $"Starting bot for {_files.Count} files",
                 LogBotEntryLevel.Info)
@@ -137,8 +156,11 @@ namespace MusicBeePlugin.Core.Bot
 
             for(int i = 0; i < _files.Count; i++)
             {
+                if (_cancelProgress) break;
+
                 uiDispatcher.BeginInvoke(new Action(() =>
                 {
+                    if (i >= _files.Count) i = _files.Count - 1;
                     OnProgress?.Invoke(_files[i], i + 1, _files.Count);
                 }));
 
@@ -183,7 +205,7 @@ namespace MusicBeePlugin.Core.Bot
 
                         tags = await GetTags(_files[i], type);
 
-
+                        //TODO: fix null tags
                         //Add tags to cache
                         if (type == SearchResultType.Album)
                             Cache.Set(new CacheObject(_files[i].GetAlbumCacheId(), tags));
@@ -194,6 +216,8 @@ namespace MusicBeePlugin.Core.Bot
                     //Count number of tag items retrieved in current process
                     int processCount = tags?.Genres.Count + tags?.Moods.Count + tags?.Themes.Count ?? 0;
 
+                    if (tags == null) continue;
+
                     Logger.AddAsync(new LogBotEntry(
                         $"Getting tags for {type.ToString()} completed. Result: {processCount}",
                         LogBotEntryLevel.Debug)
@@ -202,7 +226,7 @@ namespace MusicBeePlugin.Core.Bot
                     gmtHolder.AddGmtMedia(tags);
 
                     //If process is completed, break cycle
-                    if (tags != null && Options.TagPriority == 2) break;
+                    if (tags != null && Options.TagPriority != 2) break;
 
                 }//END FOREACH
 
@@ -214,6 +238,16 @@ namespace MusicBeePlugin.Core.Bot
                 $"Getting tags completed for {_files.Count} files",
                 LogBotEntryLevel.Info)
                 , uiDispatcher);
+
+            if (Options.UsePersistentCache)
+            {
+                Logger.AddAsync(new LogBotEntry(
+                    "Updating cache in disk",
+                    LogBotEntryLevel.Debug)
+                    , uiDispatcher);
+
+                SaveCache();
+            }
 
             uiDispatcher.BeginInvoke(new Action(() =>
             {

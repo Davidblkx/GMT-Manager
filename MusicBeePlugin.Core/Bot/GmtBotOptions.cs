@@ -10,7 +10,7 @@ namespace MusicBeePlugin.Core.Bot
     {
         /// <summary>
         /// Mode to save tags: 0 - TestMode, 1 - OnlyEmptyFields, 
-        ///                    2 - Add     , 2 - ReplaceAllTags
+        ///                    2 - Add     , 3 - ReplaceAllTags
         /// </summary>
         public int FillTagsMode { get; set; }
 

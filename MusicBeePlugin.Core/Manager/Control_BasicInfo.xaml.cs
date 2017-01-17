@@ -28,6 +28,8 @@ namespace MusicBeePlugin.Core.Manager
         public void SetTrackSource(List<TrackFile> files)
         {
             listView_FileList.ItemsSource = files;
+            if (listView_FileList.Items.Count > 0)
+                listView_FileList.SelectedIndex = 0;
         }
 
         private void OnSelectionChange(object sender, SelectionChangedEventArgs e)

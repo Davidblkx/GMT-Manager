@@ -12,7 +12,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid x:Name="Grid_Main">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -29,7 +29,8 @@
                 </GroupBox.Header>
 
                 <StackPanel>
-                    <RadioButton x:Name="Setting_RadioButton_SaveMode_Test" Content="Test Mode" Margin="0,5,0,0" IsChecked="True"/>
+                    <RadioButton x:Name="Setting_RadioButton_SaveMode_Test" Content="Test Mode" 
+                                 Margin="0,5,0,0" IsChecked="True" />
                     <RadioButton x:Name="Setting_RadioButton_SaveMode_Empty" Content="Empty Mode" />
                     <RadioButton x:Name="Setting_RadioButton_SaveMode_Add" Content="Add Mode" />
                     <RadioButton x:Name="Setting_RadioButton_SaveMode_Replace" Content="Replace Mode" />
@@ -115,6 +116,7 @@
             </GroupBox>
         </StackPanel>
 
-        <TextBlock Grid.ColumnSpan="2" Grid.Row="2" x:Name="TextBox_Info" Margin="5,0,5,5" />
+        <TextBlock Grid.ColumnSpan="2" Grid.Row="2" x:Name="TextBox_Info" 
+                   TextWrapping="Wrap" Margin="5,0,5,5" FontSize="16" />
     </Grid>
 </UserControl>

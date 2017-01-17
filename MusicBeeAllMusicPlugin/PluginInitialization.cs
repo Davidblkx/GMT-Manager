@@ -15,13 +15,13 @@ namespace MusicBeePlugin
             _windows = new Core.Tools.WindowManager();
             _windows.OnSave += UpdateTags;
 
-            InitContextMenu();
+            InitMenuItems();
         }
 
-        private void InitContextMenu()
+        private void InitMenuItems()
         {
             _mbApiInterface.MB_AddMenuItem("context.Main/GMT Manager", "", OpenGMTManager);
-            _mbApiInterface.MB_AddMenuItem("context.Main/GMT Bot", "", OpenGMTBot);
+            _mbApiInterface.MB_AddMenuItem("mnuTools/mnuTagTools/GMT Bot", "", OpenGMTBot);
         }
     }
 }

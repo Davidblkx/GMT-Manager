@@ -10,16 +10,44 @@
         Title="GMT Bot" Height="300" Width="500">
     <Grid>
         <TabControl x:Name="_tabs">
-            <TabItem Header="File List">
+            <TabItem Header="File List" x:Name="_tab_fileList">
                 <TabItem.Content>
                     <manager:Control_BasicInfo x:Name="_info" />
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Settings">
+            <TabItem Header="Settings" x:Name="_tab_settings">
                 <TabItem.Content>
-                    <local:Control_BotSettings Margin="0" />
+                    <local:Control_BotSettings Margin="0" x:Name="_settings" />
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Header="Progress" IsEnabled="False" x:Name="_tab_progress">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="30" />
+                        </Grid.RowDefinitions>
+
+                        <ListView x:Name="_listView_progress" Margin="5" Grid.Row="0">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" />
+                                    <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+
+                        <ProgressBar x:Name="_progressBar" Margin="5,0" Grid.Row="1" />
+
+                        <TextBlock x:Name="_textBlock_progress" Margin="5" Grid.Row="2"
+                                   TextAlignment="Center"/>
+
+                    </Grid>
                 </TabItem.Content>
             </TabItem>
         </TabControl>
+
+        <Button x:Name="_btn_startBot" Margin="0,5,10.6,0" Height="20" Width="100" Content="Start Bot" HorizontalAlignment="Right" VerticalAlignment="Top" />
     </Grid>
 </src:PluginWindow>

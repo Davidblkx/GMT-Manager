@@ -15,7 +15,7 @@
             <GridViewColumn Header="Genre" DisplayMemberBinding="{Binding Genre}" />
         </GridView>
         <GridView x:Key="GridViewArtists">
-            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Artist}" />
             <GridViewColumn Header="Genre" DisplayMemberBinding="{Binding Genre}" />
             <GridViewColumn Header="Decades" DisplayMemberBinding="{Binding Decades}" />
         </GridView>

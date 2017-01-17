@@ -12,48 +12,19 @@ namespace MusicBeePlugin
     {
         private void OpenGMTManager(object sender, EventArgs e)
         {
-            //Load selected files
-            string[] files = new string[0];
-            _mbApiInterface.Library_QueryFilesEx("domain=SelectedFiles", ref files);
-
-            //List to hold track list in format [TrackFile]
-            List<TrackFile> source = new List<TrackFile>();
-
-            foreach(var f in files)
-            {
-                //Array of required tag fields
-                MetaDataType[] tagTypes = new[] { MetaDataType.TrackTitle,
-                    MetaDataType.Artist, MetaDataType.Album,
-                    GetMetaDataTypeByName(PluginSettings.LocalSettings.GenresTagField),
-                    GetMetaDataTypeByName(PluginSettings.LocalSettings.MoodsTagField),
-                    GetMetaDataTypeByName(PluginSettings.LocalSettings.ThemesTagField)
-                };
-
-                //Array to hold tag values
-                string[] tags = new string[0];
-
-                //Load tags from library
-                _mbApiInterface.Library_GetFileTags(f, tagTypes,ref tags);
-
-                //Add track to list
-                source.Add(new TrackFile
-                {
-                    FilePath = f,
-                    Title = tags[0],
-                    Artist = tags[1],
-                    Album = tags[2],
-                    Genres = tags[3].Split(';').Where(x=> !string.IsNullOrEmpty(x)).ToList(),
-                    Moods = tags[4].Split(';').Where(x=> !string.IsNullOrEmpty(x)).ToList(),
-                    Themes = tags[5].Split(';').Where(x=> !string.IsNullOrEmpty(x)).ToList()
-                });
-            }
+            //Get selected tracks
+            var tracks = GetTracks("domain=SelectedFiles");
 
             //Initialize and show window
-            _windows.ShowNew<Window_GmtManager>(source);
+            _windows.ShowNew<Window_GmtManager>(tracks.ToList());
         }
         private void OpenGMTBot(object sender, EventArgs e)
         {
-            _windows.ShowNew<Window_LaunchBot>();
+            //Get displayed tracks
+            var tracks = GetTracks("domain=DisplayedFiles");
+
+            //Initialize and show window
+            _windows.ShowNew<Window_LaunchBot>(tracks.ToList());
         }
 
         /// <summary>
@@ -94,6 +65,41 @@ namespace MusicBeePlugin
             PluginSettings.LocalSettings.Save();
 
             _mbApiInterface.MB_RefreshPanels();
+        }
+
+        private IEnumerable<TrackFile> GetTracks(string domain)
+        {
+            //Load selected files
+            string[] files = new string[0];
+            _mbApiInterface.Library_QueryFilesEx(domain, ref files);
+
+            foreach (var f in files)
+            {
+                //Array of required tag fields
+                MetaDataType[] tagTypes = new[] { MetaDataType.TrackTitle,
+                    MetaDataType.Artist, MetaDataType.Album,
+                    GetMetaDataTypeByName(PluginSettings.LocalSettings.GenresTagField),
+                    GetMetaDataTypeByName(PluginSettings.LocalSettings.MoodsTagField),
+                    GetMetaDataTypeByName(PluginSettings.LocalSettings.ThemesTagField)
+                };
+
+                //Array to hold tag values
+                string[] tags = new string[0];
+
+                //Load tags from library
+                _mbApiInterface.Library_GetFileTags(f, tagTypes, ref tags);
+
+                //return new TrackFile
+                yield return new TrackFile{
+                    FilePath = f,
+                    Title = tags[0],
+                    Artist = tags[1],
+                    Album = tags[2],
+                    Genres = tags[3].Split(';').Where(x => !string.IsNullOrEmpty(x)).ToList(),
+                    Moods = tags[4].Split(';').Where(x => !string.IsNullOrEmpty(x)).ToList(),
+                    Themes = tags[5].Split(';').Where(x => !string.IsNullOrEmpty(x)).ToList()
+                };
+            }
         }
     }
 }

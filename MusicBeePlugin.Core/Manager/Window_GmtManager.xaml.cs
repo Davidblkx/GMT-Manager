@@ -41,7 +41,6 @@ namespace MusicBeePlugin.Core.Manager
 
             Close();
         }
-
         private void _webImport_OnImport(object sender, IGmtMedia result)
         {
             _manager_genres.AddRange(result.Genres);
@@ -50,7 +49,6 @@ namespace MusicBeePlugin.Core.Manager
 
             tabControl.SelectedIndex = 0;
         }
-
         public void SetTrackToHandle(List<TrackFile> files)
         {
             _files = files;
