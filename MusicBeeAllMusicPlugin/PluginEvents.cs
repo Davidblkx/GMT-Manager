@@ -38,6 +38,8 @@ namespace MusicBeePlugin
 
             foreach (var f in files)
             {
+                if (f == null) continue;
+
                 _mbApiInterface.Library_SetFileTag(f.FilePath,
                     GetMetaDataTypeByName(PluginSettings.LocalSettings.GenresTagField),
                    string.Join(";", f.Genres));

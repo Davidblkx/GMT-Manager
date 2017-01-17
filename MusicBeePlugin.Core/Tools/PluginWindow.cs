@@ -64,7 +64,7 @@ namespace MusicBeePlugin.Core.Tools
         public delegate void SaveChangesHandler(object sender, IEnumerable<TrackFile> files);
 
         #region Events
-        private void OnWindowClosing(object sender, CancelEventArgs e)
+        protected virtual void OnWindowClosing(object sender, CancelEventArgs e)
         {
             PluginSettings.LocalSettings.SetWindowSetting(
                 GetImplementedType().Name,
@@ -75,7 +75,7 @@ namespace MusicBeePlugin.Core.Tools
             if (_cancelClose)
                 Hide();
         }
-        private void OnWindowLoaded(object sender, RoutedEventArgs e)
+        protected virtual void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
             var m = PluginSettings.LocalSettings.GetWindowSetting(GetImplementedType().Name);
             Left = m.LeftPosition;

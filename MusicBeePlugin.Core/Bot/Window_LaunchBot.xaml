@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicBeePlugin.Core.Bot"
         xmlns:manager="clr-namespace:MusicBeePlugin.Core.Manager"
-        mc:Ignorable="d"
+        mc:Ignorable="d" WindowStyle="ToolWindow"
         Title="GMT Bot" Height="300" Width="500">
     <Grid>
         <TabControl x:Name="_tabs">

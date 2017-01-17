@@ -11,7 +11,8 @@ namespace MusicBeePlugin.Core
 
         public static string PluginFolder { get{ return "GMTManager";} }
         public static string SettingsFile { get { return "Settings.json"; } }
-        public static string DataBaseFile { get { return "Cache.db"; } }
+        public static string CacheFile { get { return "Cache.bin"; } }
+        public static string BotLogFile { get { return "Bot_Log.txt"; } }
 
         public static string GetPluginFolderPath(string rootFolder)
         {

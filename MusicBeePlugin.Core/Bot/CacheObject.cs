@@ -10,7 +10,11 @@ namespace MusicBeePlugin.Core.Bot
     [ProtoContract]
     public class CacheObject : IGmtMedia, IEqualityComparer<CacheObject>
     {
-        public CacheObject() { }
+        public CacheObject() {
+            Genres = new List<string>();
+            Moods = new List<string>();
+            Themes = new List<string>();
+        }
         public CacheObject(string id, IGmtMedia tags)
         {
             Id = id;

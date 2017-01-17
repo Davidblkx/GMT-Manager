@@ -213,13 +213,10 @@ namespace MusicBeePlugin.Core.Bot
                             Cache.Set(new CacheObject(_files[i].GetArtistCacheId(), tags));
                     }
 
-                    //Count number of tag items retrieved in current process
-                    int processCount = tags?.Genres.Count + tags?.Moods.Count + tags?.Themes.Count ?? 0;
-
                     if (tags == null) continue;
 
                     Logger.AddAsync(new LogBotEntry(
-                        $"Getting tags for {type.ToString()} completed. Result: {processCount}",
+                        $"Getting tags for {type.ToString()} completed. Result: {tags.Count()}",
                         LogBotEntryLevel.Debug)
                         , uiDispatcher);
 
@@ -230,7 +227,25 @@ namespace MusicBeePlugin.Core.Bot
 
                 }//END FOREACH
 
-                _files[i] = _files[i].SetGmtMedia(gmtHolder, Options);
+                if(gmtHolder.Count() > 0)
+                {
+                    Logger.AddAsync(new LogBotEntry(
+                        $"Saved {gmtHolder.Count()} tags for {gmtHolder.Title} by {gmtHolder.Album}",
+                        LogBotEntryLevel.Info)
+                        , uiDispatcher);
+
+
+                    _files[i] = _files[i].SetGmtMedia(gmtHolder, Options);
+                }
+                else
+                {
+                    Logger.AddAsync(new LogBotEntry(
+                           $"No tags found for {gmtHolder.Title} by {gmtHolder.Album}",
+                           LogBotEntryLevel.Warning)
+                           , uiDispatcher);
+
+                    _files[i] = null;
+                }
 
             }//END FOR
 

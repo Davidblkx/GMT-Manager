@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.ComponentModel;
 
 namespace MusicBeePlugin.Core.Bot
 {
@@ -35,9 +36,11 @@ namespace MusicBeePlugin.Core.Bot
             {
                 _isBotRunning = value;
 
+
                 _tab_fileList.IsEnabled = !_isBotRunning;
                 _tab_progress.IsEnabled = _isBotRunning;
                 _tab_settings.IsEnabled = !_isBotRunning;
+
                 _btn_startBot.Content = _isBotRunning ? "Cancel" : "Start Bot";
             }
         }
@@ -87,7 +90,14 @@ namespace MusicBeePlugin.Core.Bot
 
         private void Bot_OnComplete(List<TrackFile> Files)
         {
+            _bot.Logger.SaveToFile(CoreVars.GetFilePath(PluginSettings.Folder, CoreVars.BotLogFile));
+
+            if(MessageBox.Show(
+                $"Searching for tags completed!\n{Files.Where(x => x != null).Count()}" +
+                " files need to be updated, this could take a while, please be patient",
+                "Process Completed", MessageBoxButton.OK) == MessageBoxResult.OK)
             InvokeOnSave(this, Files);
+            Close();
         }
 
         private void Bot_OnProgress(TrackFile current, int currentIndex, int total)
@@ -102,6 +112,11 @@ namespace MusicBeePlugin.Core.Bot
         {
             _info?.SetTrackSource(new List<TrackFile>());
             IsBotRunning = false;
+            _listView_progress.ItemsSource = null;
+            _progressBar.Value = 0;
+            _textBlock_progress.Text = "";
+            _bot = null;
+            _tabs.SelectedIndex = 1;
         }
 
         public override void Initialize(params object[] init_params)
@@ -113,6 +128,13 @@ namespace MusicBeePlugin.Core.Bot
 
             _info.SetTrackSource(tracks);
             _files = tracks;
+        }
+
+        protected override void OnWindowClosing(object sender, CancelEventArgs e)
+        {
+            _bot?.CancelProgress();
+
+            base.OnWindowClosing(sender, e);
         }
     }
 }
