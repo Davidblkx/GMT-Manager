@@ -90,7 +90,7 @@ namespace MusicBeePlugin
             PluginInfo _about = new PluginInfo();
             _about.PluginInfoVersion = PluginInfoVersion;
             _about.Name = "GMT Manager";
-            _about.Description = "Add various tools to make it easier to filter by genre, mood and themes";
+            _about.Description = "Plugin to make easier to get and manage music genres, moods and themes";
             _about.Author = "David Pires";
             _about.TargetApplication = string.Empty;
             _about.Type = PluginType.General;
