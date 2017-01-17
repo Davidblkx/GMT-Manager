@@ -11,6 +11,9 @@ using MusicBeePlugin.Core.Tools;
 
 namespace MusicBeePlugin
 {
+    //TODO: Refactoring
+    //TODO: Better tests
+    //TODO: Better visual style
     //Main plugin implementation
     public partial class Plugin
     {

@@ -43,6 +43,9 @@ namespace MusicBeePlugin.Core.Bot
         }
         public void SaveToFile(string filePath)
         {
+            if (File.Exists(filePath))
+                File.Delete(filePath);
+
             File.WriteAllLines(filePath, GetStringEntries());
         }
     }
