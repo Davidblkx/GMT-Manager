@@ -14,6 +14,7 @@ namespace MusicBeePlugin.Core.Bot
     public class GmtBot
     {
         private List<TrackFile> _files;
+        private List<TrackFile> _filesToUpdate;
         private string _cacheFile;
         private bool _cancelProgress;
 
@@ -144,6 +145,7 @@ namespace MusicBeePlugin.Core.Bot
         public async Task Run(Dispatcher uiDispatcher)
         {
             _cancelProgress = false;
+            _filesToUpdate = new List<TrackFile>();
 
             Logger.AddAsync(new LogBotEntry(
                 $"Starting bot for {_files.Count} files",
@@ -235,7 +237,7 @@ namespace MusicBeePlugin.Core.Bot
                         , uiDispatcher);
 
 
-                    _files[i] = _files[i].SetGmtMedia(gmtHolder, Options);
+                    _filesToUpdate.Add(_files[i].SetGmtMedia(gmtHolder, Options));
                 }
                 else
                 {
@@ -243,8 +245,6 @@ namespace MusicBeePlugin.Core.Bot
                            $"No tags found for {gmtHolder.Title} by {gmtHolder.Album}",
                            LogBotEntryLevel.Warning)
                            , uiDispatcher);
-
-                    _files[i] = null;
                 }
 
             }//END FOR
@@ -266,7 +266,7 @@ namespace MusicBeePlugin.Core.Bot
 
             uiDispatcher.BeginInvoke(new Action(() =>
             {
-                OnComplete?.Invoke(_files);
+                OnComplete?.Invoke(_filesToUpdate);
             }));
         }
     }
