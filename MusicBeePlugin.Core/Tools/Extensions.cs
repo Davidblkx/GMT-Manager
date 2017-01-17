@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AllMusicApi;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -55,6 +56,14 @@ namespace MusicBeePlugin.Core.Tools
                             yield return grandChild;
                 }
             }
+        }
+
+        public static int Count(this IGmtMedia media)
+        {
+            return
+                (media.Genres?.Count ?? 0) +
+                (media.Moods?.Count ?? 0) +
+                (media.Themes?.Count ?? 0);
         }
     }
 }

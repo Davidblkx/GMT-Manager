@@ -7,6 +7,7 @@ using System.Text;
 using AllMusicApi.Model;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using MusicBeePlugin.Core.Tools;
 
 namespace MusicBeePlugin.Core.Bot
 {
@@ -204,8 +205,7 @@ namespace MusicBeePlugin.Core.Bot
                             , uiDispatcher);
 
                         tags = await GetTags(_files[i], type);
-
-                        //TODO: fix null tags
+                        
                         //Add tags to cache
                         if (type == SearchResultType.Album)
                             Cache.Set(new CacheObject(_files[i].GetAlbumCacheId(), tags));
@@ -226,7 +226,7 @@ namespace MusicBeePlugin.Core.Bot
                     gmtHolder.AddGmtMedia(tags);
 
                     //If process is completed, break cycle
-                    if (tags != null && Options.TagPriority != 2) break;
+                    if (tags != null && Options.TagPriority != 2 && tags.Count() > 0) break;
 
                 }//END FOREACH
 

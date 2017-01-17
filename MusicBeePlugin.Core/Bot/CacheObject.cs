@@ -14,9 +14,9 @@ namespace MusicBeePlugin.Core.Bot
         public CacheObject(string id, IGmtMedia tags)
         {
             Id = id;
-            Genres = tags?.Genres ?? new List<string>();
-            Moods = tags?.Moods ?? new List<string>();
-            Themes = tags?.Themes ?? new List<string>();
+            Genres = tags?.Genres?.ToList() ?? new List<string>();
+            Moods = tags?.Moods?.ToList() ?? new List<string>();
+            Themes = tags?.Themes?.ToList() ?? new List<string>();
             Created = DateTime.Now;
         }
         public CacheObject(TrackFile file, CacheType type)
