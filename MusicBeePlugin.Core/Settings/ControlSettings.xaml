@@ -13,14 +13,23 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Orientation="Vertical" Grid.Column="0" Margin="5">
-            <TextBlock Text="Genres field:" />
-            <ComboBox x:Name="comboBoxGenres" />
+            <CheckBox x:Name="useGenres" IsChecked="True" Margin="0,5,0,0">
+                <TextBlock Text="Genres field:" />
+            </CheckBox>
+            <ComboBox x:Name="comboBoxGenres" 
+                      IsEnabled="{Binding ElementName=useGenres, Path=IsChecked, TargetNullValue=False}" />
 
-            <TextBlock Text="Moods field:" />
-            <ComboBox x:Name="comboBoxMoods" />
-            
-            <TextBlock Text="Themes field:" />
-            <ComboBox x:Name="comboBoxThemes" />
+            <CheckBox x:Name="useMoods" IsChecked="True" Margin="0,5,0,0">
+                <TextBlock Text="Moods field:" />
+            </CheckBox>
+            <ComboBox x:Name="comboBoxMoods" 
+                      IsEnabled="{Binding ElementName=useMoods, Path=IsChecked, TargetNullValue=False}" />
+
+            <CheckBox x:Name="useThemes" IsChecked="True" Margin="0,5,0,0">
+                <TextBlock Text="Themes field:" />
+            </CheckBox>
+            <ComboBox x:Name="comboBoxThemes" 
+                      IsEnabled="{Binding ElementName=useThemes, Path=IsChecked, TargetNullValue=False}" />
         </StackPanel>
     </Grid>
 </UserControl>

@@ -160,6 +160,7 @@
       <DependentUpon>SettingsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings\WindowSettings.cs" />
+    <Compile Include="TagType.cs" />
     <Compile Include="Tools\ComboBoxEditor.xaml.cs">
       <DependentUpon>ComboBoxEditor.xaml</DependentUpon>
     </Compile>

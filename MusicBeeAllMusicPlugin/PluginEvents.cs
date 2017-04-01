@@ -4,6 +4,7 @@ using MusicBeePlugin.Core.Manager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MusicBeePlugin
 {
@@ -34,39 +35,7 @@ namespace MusicBeePlugin
         /// <param name="files"></param>
         private void UpdateTags(object sender, IEnumerable<TrackFile> files)
         {
-            if (files.Count() == 0) return;
-
-            foreach (var f in files)
-            {
-                if (f == null) continue;
-
-                _mbApiInterface.Library_SetFileTag(f.FilePath,
-                    GetMetaDataTypeByName(PluginSettings.LocalSettings.GenresTagField),
-                   string.Join(";", f.Genres));
-
-                _mbApiInterface.Library_SetFileTag(f.FilePath,
-                    GetMetaDataTypeByName(PluginSettings.LocalSettings.MoodsTagField),
-                   string.Join(";", f.Moods));
-
-                _mbApiInterface.Library_SetFileTag(f.FilePath,
-                    GetMetaDataTypeByName(PluginSettings.LocalSettings.ThemesTagField),
-                   string.Join(";", f.Themes));
-
-                _mbApiInterface.Library_CommitTagsToFile(f.FilePath);
-            }
-
-            PluginSettings.LocalSettings.Genres.AddRange(files.First().Genres);
-            PluginSettings.LocalSettings.Genres = PluginSettings.LocalSettings.Genres.Distinct().ToList();
-
-            PluginSettings.LocalSettings.Moods.AddRange(files.First().Moods);
-            PluginSettings.LocalSettings.Moods = PluginSettings.LocalSettings.Moods.Distinct().ToList();
-
-            PluginSettings.LocalSettings.Themes.AddRange(files.First().Themes);
-            PluginSettings.LocalSettings.Themes = PluginSettings.LocalSettings.Themes.Distinct().ToList();
-
-            PluginSettings.LocalSettings.Save();
-
-            _mbApiInterface.MB_RefreshPanels();
+            UpdateFileTagsAsync(files);
         }
 
         private IEnumerable<TrackFile> GetTracks(string domain)
@@ -102,6 +71,76 @@ namespace MusicBeePlugin
                     Themes = tags[5].Split(';').Where(x => !string.IsNullOrEmpty(x)).ToList()
                 };
             }
+        }
+
+        private async Task SetMusicBeeProrgessMessageAsync(int current, int max, string task)
+        {
+            var message = $"Saving: {current}/{max} [{task}]";
+            await Task.Factory.StartNew(() => { _mbApiInterface.MB_SetBackgroundTaskMessage(task); });
+        }
+
+        private async Task SaveFileTagAsync(string filePath, MetaDataType fieldType, string fieldValue)
+        {
+            await Task.Factory.StartNew(() =>
+            {
+                _mbApiInterface.Library_SetFileTag(filePath, fieldType, fieldValue);
+            });
+        }
+
+        private async Task SaveFileTagAsync(string filePath, TagType fieldType, IEnumerable<string> values)
+        {
+            if (!HandleTagEnabled(fieldType)) return;
+
+            var field = GetMetaDataType(fieldType);
+            var value = string.Join(";", values.Select(x => x.Trim()));
+
+            await SaveFileTagAsync(filePath, field, value);
+        }
+
+        /// <summary>
+        /// Updates current source of genres, moods and themes with a new one
+        /// </summary>
+        /// <param name="source"></param>
+        private void UpdateTagContainer(TrackFile source)
+        {
+            PluginSettings.LocalSettings.Genres.AddRange(source.Genres);
+            PluginSettings.LocalSettings.Genres = PluginSettings.LocalSettings.Genres.Distinct().ToList();
+
+            PluginSettings.LocalSettings.Moods.AddRange(source.Moods);
+            PluginSettings.LocalSettings.Moods = PluginSettings.LocalSettings.Moods.Distinct().ToList();
+
+            PluginSettings.LocalSettings.Themes.AddRange(source.Themes);
+            PluginSettings.LocalSettings.Themes = PluginSettings.LocalSettings.Themes.Distinct().ToList();
+
+            PluginSettings.LocalSettings.Save();
+        }
+
+        private async void UpdateFileTagsAsync(IEnumerable<TrackFile> fileList)
+        {
+            if (fileList.Count(x => x != null) == 0) return;
+
+            var progressCount = 0;
+            var max = fileList.Count();
+
+            foreach(var file in fileList)
+            {
+                progressCount++;
+                await SetMusicBeeProrgessMessageAsync(progressCount, max, file.Title);
+
+                if (file == null) continue;
+
+                await SaveFileTagAsync(file.FilePath, TagType.Genres, file.Genres);
+                await SaveFileTagAsync(file.FilePath, TagType.Moods, file.Moods);
+                await SaveFileTagAsync(file.FilePath, TagType.Themes, file.Themes);
+
+                await Task.Factory.StartNew(
+                    () => { _mbApiInterface.Library_CommitTagsToFile(file.FilePath); });
+            }
+
+            UpdateTagContainer(fileList.First(x => x != null));
+
+            _mbApiInterface.MB_RefreshPanels();
+            _mbApiInterface.MB_SetBackgroundTaskMessage($"{max} files were successfully updated!");
         }
     }
 }

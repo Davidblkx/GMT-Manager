@@ -13,7 +13,7 @@ GMT Manager is composed by two main tools:
 #### Manual Importer
 
  1. Select the files to import
- 2. Right-Click > GTM Manager
+ 2. Right-Click > GMT Manager
 
 ![GMT1](https://i.imgur.com/oY3hR1g.png)
 

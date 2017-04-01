@@ -36,7 +36,7 @@ namespace MusicBeePlugin
 
         public bool Configure(IntPtr panelHandle)
         {
-            if(_control == null)
+            if(_control == null || _control.IsDisposed)
             {
                 _control = new SettingsControl();
                 _control.SetTagFields(Enum.GetNames(typeof(MetaDataType)).ToList());

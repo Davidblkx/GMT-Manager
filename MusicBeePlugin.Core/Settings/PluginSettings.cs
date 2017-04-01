@@ -33,6 +33,10 @@ namespace MusicBeePlugin.Core
         public List<string> Moods { get; set; }
         public List<string> Themes { get; set; }
 
+        public bool HandleGenres { get; set; }
+        public bool HandleMoods { get; set; }
+        public bool HandleThemes { get; set; }
+
         public GmtBotOptions BotOptions { get; set; }
 
         public Dictionary<string, WindowSettings> Windows { get; set; }
@@ -92,7 +96,10 @@ namespace MusicBeePlugin.Core
 
                 Genres = new List<string>(),
                 Moods = new List<string>(),
-                Themes = new List<string>()
+                Themes = new List<string>(),
+                HandleGenres = true,
+                HandleMoods = true,
+                HandleThemes = true
             };
         }
 

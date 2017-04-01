@@ -24,6 +24,10 @@ namespace MusicBeePlugin.Core
         List<string> Moods { get; set; }
         List<string> Themes { get; set; }
 
+        bool HandleGenres { get; set; }
+        bool HandleMoods { get; set; }
+        bool HandleThemes { get; set; }
+
         void Save();
     }
 }

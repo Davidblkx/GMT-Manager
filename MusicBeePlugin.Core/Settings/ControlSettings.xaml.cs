@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Collections.Generic;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace MusicBeePlugin.Core.Settings
 {
@@ -40,6 +29,10 @@ namespace MusicBeePlugin.Core.Settings
             comboBoxGenres.SelectedItem = settings.GenresTagField;
             comboBoxMoods.SelectedItem = settings.MoodsTagField;
             comboBoxThemes.SelectedItem = settings.ThemesTagField;
+
+            useGenres.IsChecked = settings.HandleGenres;
+            useMoods.IsChecked = settings.HandleMoods;
+            useThemes.IsChecked = settings.HandleThemes;
         }
 
         public void SaveSettings()
@@ -52,6 +45,10 @@ namespace MusicBeePlugin.Core.Settings
             PluginSettings.LocalSettings.GenresTagField = comboBoxGenres.SelectedItem as string;
             PluginSettings.LocalSettings.MoodsTagField = comboBoxMoods.SelectedItem as string;
             PluginSettings.LocalSettings.ThemesTagField = comboBoxThemes.SelectedItem as string;
+
+            PluginSettings.LocalSettings.HandleGenres = useGenres.IsChecked ?? false;
+            PluginSettings.LocalSettings.HandleMoods = useMoods.IsChecked ?? false;
+            PluginSettings.LocalSettings.HandleThemes = useThemes.IsChecked ?? false;
 
             return PluginSettings.LocalSettings;
         }
