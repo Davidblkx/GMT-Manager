@@ -2,16 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.ComponentModel;
 
 namespace MusicBeePlugin.Core.Bot
@@ -73,7 +64,7 @@ namespace MusicBeePlugin.Core.Bot
             RunBot(options);
         }
 
-        private async void RunBot(GmtBotOptions options)
+        private void RunBot(GmtBotOptions options)
         {
             _bot = new GmtBot(_files, options);
 
@@ -85,7 +76,7 @@ namespace MusicBeePlugin.Core.Bot
             _listView_progress.ItemsSource = _bot.Logger.LogEntries;
             _tabs.SelectedIndex = 2;
 
-            await _bot.Run(Dispatcher);
+            _bot.Run(Dispatcher);
         }
 
         private void Bot_OnComplete(List<TrackFile> Files)
@@ -102,9 +93,10 @@ namespace MusicBeePlugin.Core.Bot
 
         private void Bot_OnProgress(TrackFile current, int currentIndex, int total)
         {
+            var counted = _progressBar.Value + currentIndex;
             _progressBar.Maximum = total;
-            _progressBar.Value = currentIndex;
-            _textBlock_progress.Text = $"File: {current.Title} - {current.Artist} [{current.Album}]";
+            _progressBar.Value = counted;
+            _textBlock_progress.Text = $"Files completed: {counted}/{total}";
         }
 
 

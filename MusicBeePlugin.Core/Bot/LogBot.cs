@@ -22,7 +22,7 @@ namespace MusicBeePlugin.Core.Bot
             uiDispatcher.BeginInvoke(new Action(() =>
             {
                 LogEntries.Add(entry);
-            }));
+            })).Wait();
         }
         public void Add(LogBotEntry entry)
         {

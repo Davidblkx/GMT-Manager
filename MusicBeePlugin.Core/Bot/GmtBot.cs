@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using AllMusicApi;
 using System.Linq;
-using System.Text;
 using AllMusicApi.Model;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -17,6 +16,7 @@ namespace MusicBeePlugin.Core.Bot
         private List<TrackFile> _filesToUpdate;
         private string _cacheFile;
         private bool _cancelProgress;
+        private Dispatcher _uiDispatcher;
 
         public CacheBot Cache { get; private set; }
         public LogBot Logger { get; private set; }
@@ -137,136 +137,148 @@ namespace MusicBeePlugin.Core.Bot
         public delegate void CompleteHandler(List<TrackFile> Files);
         public event CompleteHandler OnComplete;
 
-        /// <summary>
-        /// Asynchronous get tags for current selected files
-        /// </summary>
-        /// <param name="uiDispatcher"></param>
-        /// <returns></returns>
-        public async Task Run(Dispatcher uiDispatcher)
+        public async void Run(Dispatcher uiDispatcher)
         {
-            _cancelProgress = false;
-            _filesToUpdate = new List<TrackFile>();
+            //Reset vars and logs initial messages
+            await StartupBot(uiDispatcher);
 
-            Logger.AddAsync(new LogBotEntry(
-                $"Starting bot for {_files.Count} files",
-                LogBotEntryLevel.Info)
-                , uiDispatcher);
+            //Create a task for each call
+            var tasks = BuildTaskArray();
 
-            Logger.AddAsync(new LogBotEntry(
-                $"Options: {Options.ToString()}",
-                LogBotEntryLevel.Debug)
-                , uiDispatcher);
-
-            for(int i = 0; i < _files.Count; i++)
-            {
-                if (_cancelProgress) break;
-
-                uiDispatcher.BeginInvoke(new Action(() =>
-                {
-                    if (i >= _files.Count) i = _files.Count - 1;
-                    OnProgress?.Invoke(_files[i], i + 1, _files.Count);
-                }));
-
-                Logger.AddAsync(new LogBotEntry(
-                $"Getting tags for: {i+1} of {_files.Count}",
-                LogBotEntryLevel.Info)
-                , uiDispatcher);
-
-                Logger.AddAsync(new LogBotEntry(
-                $"Getting tags for: {_files[i].FilePath}",
-                LogBotEntryLevel.Debug)
-                , uiDispatcher);
-
-                //Shadow from current TrackFile to store tags during the filter process
-                TrackFile gmtHolder = new TrackFile()
-                {
-                    Title = _files[i].Title,
-                    Album = _files[i].Album,
-                    Artist = _files[i].Artist,
-                    FilePath = _files[i].FilePath
-                };
-
-                foreach(var type in GetSearchOrder())
-                {
-                    IGmtMedia tags = null;
-
-                    Logger.AddAsync(new LogBotEntry(
-                        $"Trying to get tags from cache...",
-                        LogBotEntryLevel.Debug)
-                        , uiDispatcher);
-
-                    tags = GetCache(_files[i], type == SearchResultType.Album
-                        ? CacheType.Album : CacheType.Artist);
-
-                    //If no Data exists in cache, retrieve it from the web
-                    if (tags == null)
-                    {
-                        Logger.AddAsync(new LogBotEntry(
-                            $"Nothing in cache, loading from web...",
-                            LogBotEntryLevel.Debug)
-                            , uiDispatcher);
-
-                        tags = await GetTags(_files[i], type);
-                        
-                        //Add tags to cache
-                        if (type == SearchResultType.Album)
-                            Cache.Set(new CacheObject(_files[i].GetAlbumCacheId(), tags));
-                        else
-                            Cache.Set(new CacheObject(_files[i].GetArtistCacheId(), tags));
-                    }
-
-                    if (tags == null) continue;
-
-                    Logger.AddAsync(new LogBotEntry(
-                        $"Getting tags for {type.ToString()} completed. Result: {tags.Count()}",
-                        LogBotEntryLevel.Debug)
-                        , uiDispatcher);
-
-                    gmtHolder.AddGmtMedia(tags);
-
-                    //If process is completed, break cycle
-                    if (tags != null && Options.TagPriority != 2 && tags.Count() > 0) break;
-
-                }//END FOREACH
-
-                if(gmtHolder.Count() > 0)
-                {
-                    Logger.AddAsync(new LogBotEntry(
-                        $"Saved {gmtHolder.Count()} tags for {gmtHolder.Title} by {gmtHolder.Album}",
-                        LogBotEntryLevel.Info)
-                        , uiDispatcher);
-
-
-                    _filesToUpdate.Add(_files[i].SetGmtMedia(gmtHolder, Options));
-                }
-                else
-                {
-                    Logger.AddAsync(new LogBotEntry(
-                           $"No tags found for {gmtHolder.Title} by {gmtHolder.Album}",
-                           LogBotEntryLevel.Warning)
-                           , uiDispatcher);
-                }
-
-            }//END FOR
-
-            Logger.AddAsync(new LogBotEntry(
-                $"Getting tags completed for {_files.Count} files",
-                LogBotEntryLevel.Info)
-                , uiDispatcher);
-
+            await TaskEx.WhenAll(tasks);
+            
             if (Options.UsePersistentCache)
             {
-                Logger.AddAsync(new LogBotEntry(
-                    "Updating cache in disk",
-                    LogBotEntryLevel.Debug)
-                    , uiDispatcher);
-
                 SaveCache();
             }
 
             uiDispatcher.BeginInvoke(new Action(() =>
             {
                 OnComplete?.Invoke(_filesToUpdate);
+            }));
+        }
+
+        /// <summary>
+        /// Reset process vars and write initial log messages
+        /// </summary>
+        /// <param name="uiDispatcher"></param>
+        private async Task StartupBot(Dispatcher uiDispatcher)
+        {
+            _cancelProgress = false;
+            _filesToUpdate = new List<TrackFile>();
+            _uiDispatcher = uiDispatcher;
+
+            await LogMessagesInitialBotRun();
+        }
+        /// <summary>
+        /// Return available tags for specified file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        private async Task<IGmtMedia> GetTagsAsync(TrackFile file)
+        {
+            //Object to store all retrieved tags
+            var gmtContainer = new TrackFile();
+
+            //Start looking for tags based on specified order in settings
+            foreach(var tagType in GetSearchOrder())
+            {
+                //Get the tag type that has priority
+                var searchCacheType = tagType == SearchResultType.Album ? CacheType.Album : CacheType.Artist;
+
+                //Search tags from cache or if result is null return it from web
+                IGmtMedia tags = GetCache(file, searchCacheType) ?? (await GetTagsFromWebAsync(file, tagType));
+
+                //If no tracks are found go to next search type
+                if (tags == null) continue;
+
+                //Log progress
+                await LogMessageTagSearchResult(tagType.ToString(), tags.Count());
+
+                //Add retrieved tags to container
+                gmtContainer.AddGmtMedia(tags);
+
+                //If we got what we want, stop
+                if (tags?.Count() > 0 && Options.TagPriority != 2) break;
+            }
+
+            return gmtContainer;
+        }
+        private async Task<IGmtMedia> GetTagsFromWebAsync(TrackFile file, SearchResultType tagType)
+        {
+            //Load tags from web
+            IGmtMedia tags = await GetTags(file, tagType);
+
+            //save it to cache
+            if (tagType == SearchResultType.Album)
+                Cache.Set(new CacheObject(file.GetAlbumCacheId(), tags));
+            else
+                Cache.Set(new CacheObject(file.GetArtistCacheId(), tags));
+
+            return tags;
+        }
+        private async Task LoadTagsForGroup(IEnumerable<TrackFile> files)
+        {
+            foreach(var file in files)
+            {
+                if (_cancelProgress) break;
+
+                IGmtMedia tags = await GetTagsAsync(file);
+
+                ReportProgress(file);
+
+                if (tags?.Count() > 0)
+                {
+                    await LogMessageTagSearchCompleted(tags.Count(), file.Title, file.Artist);
+                    _filesToUpdate.Add(file.SetGmtMedia(tags, Options));
+                }
+            }
+        }
+        private Task[] BuildTaskArray()
+        {
+            List<Task> taskList = new List<Task>();
+
+            var groupedFiles = _files.GroupBy(x => x.Artist);
+
+            foreach(var group in groupedFiles)
+            {
+                taskList.Add(LoadTagsForGroup(group));
+            }
+
+            return taskList.ToArray();
+        }
+
+
+        private async Task LogMessage(string message, LogBotEntryLevel level)
+        {
+            await Task.Factory.StartNew(() =>
+            {
+                Logger.AddAsync(
+                    new LogBotEntry(
+                        message,
+                        level)
+                    , _uiDispatcher);
+            });
+        }
+        private async Task LogMessagesInitialBotRun()
+        {
+            await LogMessage($"Starting bot for {_files.Count} files", LogBotEntryLevel.Info);
+            await LogMessage($"Options: {Options.ToString()}", LogBotEntryLevel.Debug);
+        }
+        private async Task LogMessageTagSearchResult(string searchName, int resultCount)
+        {
+            await LogMessage($"Getting tags for {searchName} completed. Result: {resultCount}", LogBotEntryLevel.Debug);
+        }
+        private async Task LogMessageTagSearchCompleted(int tagCount, string trackTitle, string artist)
+        {
+            await LogMessage($"Saved {tagCount} tags for {trackTitle} by {artist}", LogBotEntryLevel.Info);
+        }
+
+        private void ReportProgress(TrackFile file)
+        {
+            _uiDispatcher.BeginInvoke(new Action(() =>
+            {
+                OnProgress?.Invoke(file, 1, _files.Count);
             }));
         }
     }
