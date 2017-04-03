@@ -7,6 +7,7 @@ using AllMusicApi.Model;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using MusicBeePlugin.Core.Tools;
+using System.Threading;
 
 namespace MusicBeePlugin.Core.Bot
 {
@@ -142,17 +143,25 @@ namespace MusicBeePlugin.Core.Bot
             //Reset vars and logs initial messages
             await StartupBot(uiDispatcher);
 
+            Thread th = new Thread(new ThreadStart(RunBotThreadMethod));
+            th.IsBackground = true;
+
+            th.Start();
+        }
+
+        private async void RunBotThreadMethod()
+        {
             //Create a task for each call
             var tasks = BuildTaskArray();
 
             await TaskEx.WhenAll(tasks);
-            
+
             if (Options.UsePersistentCache)
             {
                 SaveCache();
             }
 
-            uiDispatcher.BeginInvoke(new Action(() =>
+            _uiDispatcher.BeginInvoke(new Action(() =>
             {
                 OnComplete?.Invoke(_filesToUpdate);
             }));

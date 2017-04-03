@@ -39,16 +39,20 @@ namespace AllMusicApi
 
             while (results.Count < maxResults || maxResults == -1)
             {
-                currentPage++;
-                
-                var response = await client.GetAsync(apiEndPoint + currentPage);
-                if (!response.IsSuccessStatusCode) break;
+                try
+                {
+                    currentPage++;
 
-                results.AddRange(GetResult<T>(await response.Content.ReadAsStringAsync()));
+                    var response = await client.GetAsync(apiEndPoint + currentPage);
+                    if (!response.IsSuccessStatusCode) break;
 
-                if (results.Count == lastCount) break;
+                    results.AddRange(GetResult<T>(await response.Content.ReadAsStringAsync()));
 
-                lastCount = results.Count;
+                    if (results.Count == lastCount) break;
+
+                    lastCount = results.Count;
+                }
+                catch { break; }
             }
 
             if (maxResults == -1) return results;
@@ -67,25 +71,32 @@ namespace AllMusicApi
             client.DefaultRequestHeaders.Add("DNT", "1");
             client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
 
-            //Get basic info
-            var response = await client.GetAsync(apiEndPoint);
-            if (!response.IsSuccessStatusCode) return artist;
+            try
+            {
+                //Get basic info
+                var response = await client.GetAsync(apiEndPoint);
+                if (!response.IsSuccessStatusCode) return artist;
 
-            artist.BuildBasicInfo(await response.Content.ReadAsStringAsync());
+                artist.BuildBasicInfo(await response.Content.ReadAsStringAsync());
 
-            //Get discography
-            response = await client.GetAsync(apiEndPoint + "/discography");
-            if (!response.IsSuccessStatusCode) return artist;
+                //Get discography
+                response = await client.GetAsync(apiEndPoint + "/discography");
+                if (!response.IsSuccessStatusCode) return artist;
 
-            artist.BuildArtistAlbums(await response.Content.ReadAsStringAsync());
+                artist.BuildArtistAlbums(await response.Content.ReadAsStringAsync());
 
-            //Get Relations
-            response = await client.GetAsync(apiEndPoint + "/related");
-            if (!response.IsSuccessStatusCode) return artist;
+                //Get Relations
+                response = await client.GetAsync(apiEndPoint + "/related");
+                if (!response.IsSuccessStatusCode) return artist;
 
-            artist.BuildArtistRelations(await response.Content.ReadAsStringAsync());
+                artist.BuildArtistRelations(await response.Content.ReadAsStringAsync());
 
-            return artist;
+                return artist;
+            }
+            catch
+            {
+                return artist;
+            }
         }
 
         public async Task<Album> GetAlbum(string allmusic_id)
@@ -99,17 +110,24 @@ namespace AllMusicApi
             client.DefaultRequestHeaders.Add("DNT", "1");
             client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
 
-            var response = await client.GetAsync(apiEndPoint);
-            if (!response.IsSuccessStatusCode) return album;
+            try
+            {
+                var response = await client.GetAsync(apiEndPoint);
+                if (!response.IsSuccessStatusCode) return album;
 
-            album.BuildBasicInfo(await response.Content.ReadAsStringAsync());
+                album.BuildBasicInfo(await response.Content.ReadAsStringAsync());
 
-            response = await client.GetAsync(apiEndPoint + "/similar");
-            if (!response.IsSuccessStatusCode) return album;
+                response = await client.GetAsync(apiEndPoint + "/similar");
+                if (!response.IsSuccessStatusCode) return album;
 
-            album.BuildAlbumRelations(await response.Content.ReadAsStringAsync());
+                album.BuildAlbumRelations(await response.Content.ReadAsStringAsync());
 
-            return album;
+                return album;
+            }
+            catch
+            {
+                return album;
+            }
         }
 
         protected IEnumerable<T> GetResult<T>(string htmlDoc)
